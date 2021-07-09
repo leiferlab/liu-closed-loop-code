@@ -15,8 +15,9 @@ requirements:
  - HDF5 v1.8.18+ (latest v1.8 but not v1.10)
  - h5labview
 
-To run the real-time LabVIEW code, open the LabVIEW project at \LabviewVIs\ProjectAPI.lvproj
-Associated hardware in the correct configuration is required for proper functionality.
+To run the real-time LabVIEW code, open the LabVIEW project at \LabviewVIs\ProjectAPI.lvproj and then select the appropriate experimental protocol vi. For example, the head/tail stimulation is done with RunHeadandTailRailswithDelays.vi.
+
+Associated hardware in the correct configuration is required for the LabVIEW code to run properlly.
 
 # Post Processing 
 

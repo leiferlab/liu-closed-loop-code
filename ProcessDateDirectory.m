@@ -1,4 +1,4 @@
-% This script performs behavioral analysis without a cluster
+% This script performs post processing analysis without a computer cluster
 
 % analysis options
 decode_camera_video = 1;
