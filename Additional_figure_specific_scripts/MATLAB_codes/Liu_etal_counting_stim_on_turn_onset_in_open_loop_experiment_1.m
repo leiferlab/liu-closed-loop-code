@@ -6,13 +6,13 @@ close all
 clear
 clc
 
-main_folder=('/projects/LEIFER/Sandeep/APIData/20200902_RunFullWormRails_Sandeep_AML67_10ulret');
+main_folder=('/projects/LEIFER/Sandeep/APIData/20210624_RunFullWormRails_Sandeep_AML67_10ulRet_red');
 cd(main_folder)
 
 %%%%%%% user input parameters %%%%%%
 test_stimulus_duration=1; %%% if you want to test a specific stim duration
 stim_threshold_min=0.2; %%%% min stim power 
-stim_threshold_max=10;   %%%% max stim power
+stim_threshold_max=100;   %%%% max stim power
 
 %%%%%%% determine stim color %%%%%%%%
 if contains(main_folder, 'blue')
@@ -80,7 +80,7 @@ parameters = load_parameters(folders{1}); % load parameters for the first folder
 
 %%%%% constants
 normalized_stimuli = 1; %delta function
-fps = parameters.SampleRate;
+fps = parameters.SampleRate;        
 stim_similarity_thresh = 1.1;  % combine data in case the intensity is within some range (to take care of box to box variation)
 number_of_behaviors = max(L(:)-1);
 rails_durations=parameters.RailsDurations;
@@ -120,6 +120,9 @@ cumulative_recording_duration_folder=0; %% cumulative reconding length
 trial_count_folder=0;       %% to count the number of worm tracks in an assay
 worms_tracked_simultaneously_folders=[];   %% to count the number of worms tracked simultaneously
 error_code_folder=[]; %% to determine the criteria due to which a worm is not considered for analysis
+stim_on_valid_worms_folder=[];
+stim_on_valid_worms_folder_rails=[]; %%% for open loop
+all_stim_onsets_folder=[]; %%% for open loop
 
 for folder_index = [1:length(folders)]
 
@@ -162,6 +165,9 @@ for folder_index = [1:length(folders)]
     trial_count_trial=0;
     frame_details_trial=[];
     error_code_trial=[];
+    stim_on_valid_worms_trial=[];
+    all_stim_onsets_trial=[];
+    stim_on_valid_worms_trial_rails=[];  %%%% for rails
     
     for track_index = 1:length(current_tracks)
         
@@ -189,7 +195,15 @@ for folder_index = [1:length(folders)]
         if min(min(current_tracks(track_index).AlignedStimulus))<0
             current_tracks(track_index).AlignedStimulus(:,:)=-1*current_tracks(track_index).AlignedStimulus(:,:); 
         end
-                
+        
+        %%%% finding all the stim events
+        original_stim=current_tracks(track_index).AlignedStimulus(:,mid_cline_index);
+        dummy_all_stim_onsets(:,1)=folder_index;
+        dummy_all_stim_onsets(:,2)=track_index;
+        dummy_all_stim_onsets(:,3)= size(find(diff([original_stim>stim_threshold_min & original_stim<stim_threshold_max]) >0)+1,1);
+        all_stim_onsets_trial=[all_stim_onsets_trial
+            dummy_all_stim_onsets];
+        
         %%%%%%%%%%%%%%%%% to ignore smaller length worms %%%%%%%%%%%%%%%%%%
         length_of_current_worm=mean(current_tracks(track_index).Length);
         length_of_worm_matrix{folder_index,track_index}=length_of_current_worm;
@@ -278,7 +292,7 @@ for folder_index = [1:length(folders)]
         %%%%then find negative values (which are the negative crossing events)
         er_turn_onset_indices = find(er_neg_crossing_timeseries>0);
         
-        %%%Then get a list of all indices within +-5 frames of the crossing
+        %%%Then get a list of all indices within +-10 frames of the crossing
         %%%event
         er_turn_onset_zones_indices = find(movmax((er_neg_crossing_timeseries>0),round(parameters.SampleRate/1.5))==1);
         
@@ -358,6 +372,10 @@ for folder_index = [1:length(folders)]
         [minValue, closestIndex] = min(abs(stim_on_turn_peaks - raw_data_stim_peaks.'));
         stim_while_turning_peaks_dummy=unique(raw_data_stim_peaks(closestIndex));   %%%% unique is making sure that peaks do not get counted multiple times
         
+        test{1,track_index}=raw_data_stim_peaks;
+        test{2,track_index}=final_valid_stim;
+        test{3,track_index}=raw_stim_peaks;
+        
         if behavior_to_study==2 || behavior_to_study==3
         stim_while_turning_peaks_old=[];
         
@@ -373,8 +391,20 @@ for folder_index = [1:length(folders)]
         original_stim=current_tracks(track_index).AlignedStimulus(:,mid_cline_index);
         stim_while_turning_final=zeros(size(original_stim));
         
-        stim_while_turning_peaks=intersect(final_valid_stim,raw_stim_peaks); %%% this array has the correctly defined stim associated turn peaks and peaks of same width 
- 
+        %%%% now we are running the code on all the stims which matched
+        %%%% stim intensity and duration conditions. We will filter out the
+        %%%% final valid stims at the end
+        
+% % %         plot(current_tracks(track_index).AlignedStimulus(:,mid_cline_index),'-b')
+% % %         hold on;
+% % %         plot(raw_stim_final,'--r')
+% % %         title(num2str(raw_data_stim_peaks))
+% % %         hold off
+% % %         close all
+        
+% % % stim_while_turning_peaks=intersect(final_valid_stim,raw_stim_peaks); %%% older code
+        stim_while_turning_peaks=raw_data_stim_peaks; %%% new code
+
         for i=1:length(stim_while_turning_peaks)
             
             sprintf('current_track_index: %d and stim_at_peaks: %d',track_index,stim_while_turning_peaks(i))
@@ -484,7 +514,19 @@ for folder_index = [1:length(folders)]
                 dummy_error_code];    %%% error code when stim delivered to reversing worms =7
                 continue
             end
-                                            
+            
+            %%%% collect all the stims which were delivered to valid worms
+            dummy_stim_on_valid_worms(:,1)=folder_index;
+            dummy_stim_on_valid_worms(:,2)=track_index;
+            dummy_stim_on_valid_worms(:,3)=stim_while_turning_peaks(i);
+            stim_on_valid_worms_trial=[stim_on_valid_worms_trial
+                dummy_stim_on_valid_worms]; 
+            
+            %%%% making sure that the stim was delivered on the turn onset
+            if isempty(intersect(stim_while_turning_peaks(i),final_valid_stim))
+                continue
+            end
+                
             %%%%%% detecting reversals in the stimulus window 
             indices_below_set_vel_threshold_turns = find(dummy_array_with_velocity_info_turns(vel_xlim_turns_1:vel_xlim_turns_2,:) < negative_vel_threshold); 
 
@@ -522,7 +564,9 @@ for folder_index = [1:length(folders)]
 
         %%%%%%%%%%%% counting number of reversals for rails %%%%%%%%%%%%%%%
         if analysis_rails==1
-            stim_peaks=intersect(all_stim_peaks,final_valid_stim); %%% detect stim which occured on turn onset
+            
+            %%%%% testing on all the stims
+            stim_peaks=all_stim_peaks; %%%% we want to run on all stims and find the number of valid worms
             
             for ab=1:length(stim_peaks)
             
@@ -612,33 +656,20 @@ for folder_index = [1:length(folders)]
                 dummy_error_code];  
                 continue
             end
-            
-% % % %             %%% make sure that stim is delivered during forward motion and not turns
-% % % %             if any(dummy_array_with_ellipse_ratio_info_rails(480:500,:)<ellipse_ratio_threshold)
-% % % %                 disp('Stim on turn: trial ignored')
-% % % %                 dummy_error_code(:,1)=folder_index;
-% % % %                 dummy_error_code(:,2)=track_index;
-% % % %                 dummy_error_code(:,3)=stim_peaks(ab);
-% % % %                 dummy_error_code(:,4)=8; %% stim delivered during turn
-% % % %                 error_code_trial=[error_code_trial
-% % % %                 dummy_error_code];  
-% % % %                 continue
-% % % %             end
-            
-            indices_below_set_vel_threshold_rails = find(dummy_array_with_velocity_info_rails(vel_xlim_rails_1:vel_xlim_rails_2,:) < negative_vel_threshold); 
 
-            %%% when no reversal is detected
-            if isempty(indices_below_set_vel_threshold_rails)
-
-                disp('No reversal detected')
-                dummy_array_with_number_of_reversal_rails(:,1)=folder_index;
-                dummy_array_with_number_of_reversal_rails(:,2)=track_index;
-                dummy_array_with_number_of_reversal_rails(:,3)=stim_peaks(ab);
-                dummy_array_with_number_of_reversal_rails(:,4)=0;
-                count_number_of_reversal_trial_rails=[count_number_of_reversal_trial_rails
-                dummy_array_with_number_of_reversal_rails];
+            %%%% collect all the stims which were delivered to valid worms
+            dummy_stim_on_valid_worms(:,1)=folder_index;
+            dummy_stim_on_valid_worms(:,2)=track_index;
+            dummy_stim_on_valid_worms(:,3)=stim_peaks(ab);
+            stim_on_valid_worms_trial_rails=[stim_on_valid_worms_trial_rails
+                dummy_stim_on_valid_worms]; 
+            
+            %%%% making sure that the stim was delivered on the turn onset
+            if isempty(intersect(stim_peaks(ab),final_valid_stim))
                 continue
             end
+            
+            indices_below_set_vel_threshold_rails = find(dummy_array_with_velocity_info_rails(vel_xlim_rails_1:vel_xlim_rails_2,:) < negative_vel_threshold); 
 
             %%%% if reversal is detected
 
@@ -697,6 +728,15 @@ for folder_index = [1:length(folders)]
     error_code_folder=[error_code_folder
                 error_code_trial];  
     
+    stim_on_valid_worms_folder=[stim_on_valid_worms_folder        
+            stim_on_valid_worms_trial];
+        
+    stim_on_valid_worms_folder_rails=[stim_on_valid_worms_folder_rails        
+    stim_on_valid_worms_trial_rails];
+        
+    all_stim_onsets_folder=[all_stim_onsets_folder
+        all_stim_onsets_trial];
+    
     cumulative_recording_duration_folder=cumulative_recording_duration_folder+cumulative_recording_duration_trial;
     trial_count_folder=trial_count_folder+trial_count_trial;
 
@@ -705,3 +745,7 @@ end
 end
 
 disp('Calculation finished')
+disp(['stim duration: ' num2str(test_stimulus_duration) ' sec'])
+disp(['All stim events: ' num2str(sum(all_stim_onsets_folder(:,3)))])
+disp(['stims on valid worms: ' num2str(size(stim_on_valid_worms_folder_rails,1))])
+disp(['stims on turning worms: ' num2str(size(count_number_of_reversal_folder_rails,1))])
