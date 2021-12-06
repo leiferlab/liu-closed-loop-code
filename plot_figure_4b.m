@@ -5,28 +5,28 @@ clc
 close all
 
 %%%%%% loading closed loop data from 20210723
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/closed_loop/AML470_20210723_turns_0uW_3s_new4.mat')
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/closed_loop/AML470_20210723_turns_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210723_turns_0uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210723_turns_80uW_3s_new4.mat')
 
 %%%%%% loading closed loop data from 20210721
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/closed_loop/AML470_20210721_turns_0uW_3s_new4.mat')
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/closed_loop/AML470_20210721_turns_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210721_turns_0uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210721_turns_80uW_3s_new4.mat')
 
 %%%%%% loading closed loop data from 20210720
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/closed_loop/AML470_20210720_turns_0uW_3s_new4.mat')
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/closed_loop/AML470_20210720_turns_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210720_turns_0uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210720_turns_80uW_3s_new4.mat')
 
 %%%%%% loading open loop data from 20210723
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/open_loop/AML470_20210723_rails_0uW_3s_new4.mat')
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/open_loop/AML470_20210723_rails_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210723_rails_0uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210723_rails_80uW_3s_new4.mat')
 
 %%%%%% loading open loop data from 20210721
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/open_loop/AML470_20210721_rails_0uW_3s_new4.mat')
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/open_loop/AML470_20210721_rails_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210721_rails_0uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210721_rails_80uW_3s_new4.mat')
 
 %%%%%% loading open loop data from 20210720
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/open_loop/AML470_20210720_rails_0uW_3s_new4.mat')
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/Matlab_codes_and_data/data_to_plot_probability_of_reversal/AML470/open_loop/AML470_20210720_rails_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210720_rails_0uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210720_rails_80uW_3s_new4.mat')
 
 %% combining data from all the three days
 %%%% 80 uW closed loop data
@@ -134,24 +134,6 @@ annotation(figure1,'line',[0.591071428571428 0.805357142857142],...
 % Create line
 annotation(figure1,'line',[0.230357142857143 0.444642857142857],...
     [0.0323333333333339 0.0333333333333339]);
-
-% % % % % % Create textbox
-% % % % % annotation(figure1,'textbox',...
-% % % % %     [0.597499999999998 0.000357142857142849 0.204285714285716 0.073904761904763],...
-% % % % %     'String','Control',...
-% % % % %     'HorizontalAlignment','center',...
-% % % % %     'FontSize',14,...
-% % % % %     'FitBoxToText','off',...
-% % % % %     'EdgeColor','none');
-% % % % % 
-% % % % % % Create textbox
-% % % % % annotation(figure1,'textbox',...
-% % % % %     [0.233214285714284 0.000357142857142858 0.204285714285716 0.0739047619047629],...
-% % % % %     'String','Experiment',...
-% % % % %     'HorizontalAlignment','center',...
-% % % % %     'FontSize',14,...
-% % % % %     'FitBoxToText','off',...
-% % % % %     'EdgeColor','none');
 
 %%%%% code for doing statistical test
 %%%%% for bar 1 and bar 2

@@ -1,14 +1,15 @@
+%%%% This code will generate figure S5 as presented in this publication
 clear
 clc
-% close all
+close all
 
-load('/projects/LEIFER/Sandeep/APIData/20210624_RunFullWormRails_Sandeep_AML67_10ulRet_red/habituation_num_reversal_rails_AML67_20210624_3.mat')
-load('/projects/LEIFER/Sandeep/APIData/20210614_RunFullWormRails_Sandeep_AML67_10ulRet_red/habituation_num_reversal_rails_AML67_20210614_3.mat')
-load('/projects/LEIFER/Sandeep/APIData/20200902_RunFullWormRails_Sandeep_AML67_10ulret/habituation_num_reversal_rails_AML67_20200902_3.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML67_open_loop\habituation_num_reversal_rails_AML67_20210624_3.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML67_open_loop\habituation_num_reversal_rails_AML67_20210614_3.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML67_open_loop\habituation_num_reversal_rails_AML67_20200902_3.mat')
 
-load('/projects/LEIFER/Sandeep/APIData/20210723_RunFullWormRails_Sandeep_AKS_483.7.e_mec4_Chrimson_10ulRet_red/habituation_num_reversal_rails_AML470_20210723_3.mat')
-load('/projects/LEIFER/Sandeep/APIData/20210721_RunFullWormRails_Sandeep_AKS_483.7.e_mec4_Chrimson_10ulRet_red/habituation_num_reversal_rails_AML470_20210721_3.mat')
-load('/projects/LEIFER/Sandeep/APIData/20210720_RunFullWormRails_Sandeep_AKS_483.7.e_mec4_Chrimson_10ulRet_red/habituation_num_reversal_rails_AML470_20210720_3.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML470_open_loop\habituation_num_reversal_rails_AML470_20210723_3.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML470_open_loop\habituation_num_reversal_rails_AML470_20210721_3.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML470_open_loop\habituation_num_reversal_rails_AML470_20210720_3.mat')
 
 bins_of_interest=[0:3600:54000];
 

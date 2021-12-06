@@ -1,7 +1,7 @@
 %%% Please use this code to generate the following figures presented in the
 %%% publication Liu et al.: Fig. 2, Fig. 3, supplementary fig. S1,
-%%% supplementary fig. S4, supplementary fig. S6, information related to
-%%% anterior vs posterior stimulation in supplementary table S1,
+%%% supplementary fig. S3, supplementary fig. S4, supplementary fig. S6, 
+%%% information related to anterior vs posterior stimulation in supplementary table S1,
 %%% Supplementary Video S2, Supplementary Video S3, Supplementary Video S4, 
 %%% and Supplementary Video S5.
 
@@ -9,14 +9,28 @@ clear
 clc
 close all
 
-cd('/projects/LEIFER/Mochi/APIData')
+%% ask user which figure to generate. Select the corresponding figure code to generate figure of interest
+%%% For e.g. to generate figure 2, use the figure code 2.
+%%% Figure number and corresponding figure code
+%%% Figure 2=2;
+%%% Figure 3=3; 
+%%% supplementary fig. S1=11;
+%%% supplementary fig. S3=13;
+%%% supplementary fig. S4=14; 
+%%% supplementary fig. S6=16; 
+
+plot_figure=[2 3];
 
 %% ask for folders and initialize
 %%% addpath(genpath(pwd))
 load('reference_embedding.mat')
 relevant_track_fields = {'Centerlines','Path','Frames','AlignedStimulus', 'Velocity','Length','VelocityBehavior'};
+
 %%%select folders
-folders = getfoldersGUI();
+% % folders = getfoldersGUI(); %% manually select folders using experimental tags
+folders=load('D:/Github_repos/liu-closed-loop-code/datasets_used_in_paper/figure_2_dataset.mat'); %%% enter the path to the dataset folder
+folders=folders.folders;
+
 parameters = load_parameters(folders{1}); % load parameters for the first folder
 
 %% optional videoplotting
@@ -100,7 +114,6 @@ for head_intensity_index = 1:numel(parameters.RailsIntensities)
 end
 video_duration = total_window_frames; % total duration in seconds
 
-
 %% allow user to select the folder to save as
 if plot_video
     pathname = uigetdir('', 'Select Video Output Folder')
@@ -135,7 +148,9 @@ for folder_index = 1:length(folders)
     end
     
     current_param = load_parameters(folders{folder_index});
+    
     for track_index = 1:length(current_tracks)
+        
         %%%process the stimulus going from n centerline points to a single
         %%%point by taking the median
         nd_sampled_stimulus = centerline_sampled_stimulus_to_nd_sampled_stimulus(current_tracks(track_index).AlignedStimulus, worm_region_count)';
@@ -227,8 +242,9 @@ for stimulus_index = 1:n_sti
         end
     end
 end
+
 %% 2 plot the behavioral ratios as a function of time
-n_tracks=zeros(1,n_sti); %number of tracks in each sti intensities
+n_tracks=zeros(1,n_sti); %number of tracks in each stim intensities
 my_colors = velocity_based_behavior_colors;
 my_behavior_names = velocity_based_behavior_names;
 for stimulus_index = 1:n_sti
@@ -298,9 +314,11 @@ for stimulus_index = 1:n_sti
 
 end
 
-%% Plot the before/after bar charts
+%% Plot the before/after bar charts (figure 2m-p)
 my_colors = velocity_based_behavior_colors;
 my_behavior_names = velocity_based_behavior_names;
+
+if any(ismember(plot_figure,[2,14,16]))
 for stimulus_index = 1:n_sti
     %%% plot the change in fraction of animals before or after the stimulus
     if saved_head_or_tail_first(stimulus_index)
@@ -313,10 +331,10 @@ for stimulus_index = 1:n_sti
         head_or_tail_string = 'Tail Stimulus First';
     end
     
-% % % %     %%% if plotting only the four plots shown in fig. 2m-p
-% % % %     if stimulus_index~=[1 5 21 25]
-% % % %         continue
-% % % %     end
+    %%% if plotting only the four plots shown in fig. 2m-p. Uncomment the following code to plot the figures for all stimulus conditions
+    if stimulus_index~=[1 5 21 25]
+        continue
+    end
          
     figure('position', [0 0 400 400])
     hold on
@@ -324,7 +342,7 @@ for stimulus_index = 1:n_sti
     ax = gca;
     ax.FontSize = 10;
     
-    %%%keep track the bars
+    %%%vkeep track of the bars
     p = zeros(1, number_of_behaviors); % the p-values
     bar_vals = zeros(number_of_behaviors,2);
     error_vals = zeros(number_of_behaviors*2,2);
@@ -412,7 +430,7 @@ for stimulus_index = 1:n_sti
     hold off 
 end
 
-%% velocity histogram vs time
+%% velocity histogram vs time (figure 2i-l)
 time_axis = -velocity_time_window_before+1:velocity_time_window_after;
 time_axis = time_axis/parameters.SampleRate;
 velocity_density = zeros(numel(edges)-1, numel(time_axis));
@@ -424,7 +442,12 @@ for stimulus_index = 1:n_sti
         velocity_density(:,time_index) = histcounts(velocities{stimulus_index}(:,time_index), edges);
     end
     mean_velocities = mean(velocities{stimulus_index},1);
-
+    
+    %%% if plotting only the four plots shown in fig. 2i-l. Uncomment the following code to plot the figures for all stimulus conditions
+    if stimulus_index~=[1 5 21 25]
+        continue
+    end
+    
     figure
     hold on
     imagesc(time_axis, edges, velocity_density)
@@ -482,15 +505,15 @@ for stimulus_index = 1:n_sti
          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2']});
 end
 
-%% make sorted velocity traces and plot the movies
+%% make sorted velocity traces and plot the movies (figure 2e-h)
 my_colors = velocity_based_behavior_colors;
 my_behavior_names = velocity_based_behavior_names;
 for stimulus_index = 1:n_sti
     
-% % %     %%% uncomment the following to just plot the figures shown in paper
-% % %     if stimulus_index~=[1 5 21 25]
-% % %         continue
-% % %     end
+    %%% Plot fig. 2a-d. Uncomment the following code to plot the figures for all stimulus conditions
+    if stimulus_index~=[1 5 21 25]
+        continue
+    end
 
     if isempty(velocities{stimulus_index})
         continue
@@ -608,7 +631,7 @@ for stimulus_index = 1:n_sti
         make_tiled_movies_given_instances(allTracks, folders, saveFileName, possible_tracks, possible_frames, N_rows, N_columns, video_duration, display_field_name, selected_index)
      end
     
-    %%% generate single animal velocity trace
+    %%% generate single animal velocity trace (figure 2a-d)
     figure
     ax = gca;
     ax.Clipping = 'off';
@@ -679,7 +702,7 @@ for stimulus_index = 1:n_sti
      set(gca, 'color', [0.5 0.5 0.5])
      hold off;
 end
-
+end
 %% use behavioral annotations to determine decision making +
 % % % plot response probability heatmap given head and tail intensities 
 % % % (this is only compatible without delayed stimulus)
@@ -743,9 +766,11 @@ for stimulus_index = 1:n_sti
     behavioral_transition_matrix_for_all_stimuli(:,:,stimulus_index) = behavioral_transition_matrix;
 end
 
-% % %loop through the behaviors and plot the probability of behavioral
-% % %response with respect to each stimulus intensity, i.e. heatmap
+%%% loop through the behaviors and plot the probability of behavioral
+%%%response with respect to each stimulus intensity, i.e. heatmap (figure 3a-d)
 behavioral_response_for_all_stimuli = sum(behavioral_transition_matrix_for_all_stimuli,1); %display only the result probability
+
+if any(ismember(plot_figure,3))
 ax31=figure('Renderer', 'painters', 'Position', [440 290 798 600]);
 for behavioral_index = 1:numel(my_behavior_names)
     response_heatmap_for_behavior = zeros(numel(parameters.RailsIntensities),numel(parameters.RailsIntensities));
@@ -803,7 +828,7 @@ for behavioral_index = 1:numel(my_behavior_names)
 % %     title(chart_title)
 end
 
-%%% Plot plane fit coefficients
+%%% Plot plane fit coefficients (figure 3f)
 B=1; %backward
 P=2;
 F=3;
@@ -841,7 +866,7 @@ ylabel('\partialP/\partialI Head Stim (mm^2/uW)')
 % % title(['Initial behavior state: ', my_behavior_names{initial_behavior_of_interest}])
 %%%
 
-%% create a an array of pi charts
+%% create a an array of pi charts (figure 3e)
 x = zeros(n_sti, 1);
 y = zeros(n_sti, 1);
 s = ones(n_sti,1);
@@ -866,9 +891,12 @@ for intensity_index = 1:numel(parameters.RailsIntensities)
 end
 set(gca,'xtick',1:numel(parameters.RailsIntensities),'XTickLabel',ax_labels)
 set(gca,'ytick',1:numel(parameters.RailsIntensities),'YTickLabel',ax_labels)
+end
 
-%%%%% This portion of the code is used to generate figure S1 and figure S2.
-%%%%% For thsi portion of the code use the complete dataset (select "All tags" at the very first step)
+%%%%% This portion of the code is used to generate figure S1.
+%%%%% For this portion of the code use the complete dataset (select "All tags" at the very first step)
+
+if any(ismember(plot_figure,11))
 %% get closed loop lags
 lags = [];
 experiment_drifts = [];
@@ -883,7 +911,7 @@ end
 bin_edges = 0:10;
 lag_prob = histcounts(lags,bin_edges) / numel(lags);
 
-%%
+%% Plot round trip latency (Figure S1a)
 ax1=figure('Renderer', 'painters', 'Position', [440 290 694 520]);
 plot(bin_edges(1:end-1), lag_prob , '-o','LineWidth',2,'MarkerFaceColor',[0 0.45,0.74],'MarkerSize',10,'LineWidth',2)
 for label_index = 1:numel(bin_edges)-2
@@ -911,7 +939,7 @@ set(ax2, 'YTickLabel', []);
 % % % xlim([0 9])
 xlabel(ax2,'Round-trip Latency (ms)')
 %%
-%%%% plot the drifts
+%%%% plot the spatial drifts (Figure S1c)
 figure3=figure;
 axes3 = axes('Parent',figure3);
 bin_edges = 0:10:200;
@@ -982,7 +1010,8 @@ end
 bin_edges = 0:MAX_LAG;
 lag_counts = sum(track_count_vs_tracking_lag,1);
 lag_prob = lag_counts / sum(lag_counts);
-%%
+
+%% PLot tracking frame rate (Figure S1b)
 figure('Renderer', 'painters', 'Position', [440 290 694 520])
 plot(bin_edges(2:end), lag_prob , '-o','MarkerFaceColor',[0 0.45,0.74],'MarkerSize',10,'LineWidth',2)
 % % % label the first label_n datapoints
@@ -1019,7 +1048,7 @@ end
 mean_worm_counts = mean(worm_counts_enumerated);
 std_worm_counts = std(worm_counts_enumerated);
 
-%%
+%% plot tracked worms in Frame (Figure S1f)
 figure
 bar(worm_counts_prob , 'hist')
 axis([0 80 0 0.1])
@@ -1049,7 +1078,7 @@ for folder_index = 1:numel(folders)
     all_track_lengths = [all_track_lengths, track_lengths./parameters.CameraPixeltommConversion*1000];
 end
 
-%% plot track durations
+%% plot track durations (Figure S1e)
 figure5=figure;
 axes5 = axes('Parent',figure5);
 hold(axes5,'on');
@@ -1067,7 +1096,7 @@ ylabel('Probability')
 ax = gca;
 ax.FontSize = 14;
 box off;
-%% plot worm lengths
+%% plot worm lengths (Figure S1d)
 figure4=figure;
 axes4 = axes('Parent',figure4);
 hold(axes4,'on');
@@ -1090,10 +1119,25 @@ ax = gca;
 ax.FontSize = 14;
 box off;
 
-disp('Analysis finished!')
 %% print the total duration of single animal recordings in hrs and stimulus events
 sprintf(['total number of plates= ', num2str(numel(folders))])
 sprintf(['total stim events = ', num2str(numel(stim_peaks_folder)), ' events'])
 sprintf(['cumulative recording duration = ', num2str(numel(vertcat(allTracks.Frames))/parameters.SampleRate/3600), ' animal hours'])
 sprintf(['animals per frame: mean = ', num2str(round(mean_worm_counts)), ' std = ', num2str(round(std_worm_counts))])
 sprintf(['total stim events on valid worms= ', num2str(numel(behavioral_transition_stats)), ' events'])
+
+end
+
+%% To plot histogram of velocity distribution (Figure S3)
+if any(ismember(plot_figure,13))
+figure;
+histogram(vertcat(allTracks.Velocity),7000)
+xlim([-0.4 0.4])
+xlabel('Velocity (mm/s)','FontSize',14)
+ylabel('Timepoint Count','FontSize',14)
+ax = gca;
+ax.FontSize = 14;
+box off;
+end
+
+disp('Analysis finished!!')

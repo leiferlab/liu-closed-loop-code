@@ -1,4 +1,4 @@
-%%% This matlab code will help the user to re-generate figure S2 as well as
+%%% This matlab code will help the user to regenerate figure S2 as well as
 %%% the numbers presented in supplementary table S1. In this table, you can 
 %%% get the numbers presented in columns a) Cumulative Recording Length (animal-hours)
 %%% and b) Animals per frame, for AML67 and AML470 open loop and closed-loop experiments
@@ -14,19 +14,19 @@ close all
 % % folders = getfoldersGUI();
 
 %%% to plot supplementary figure S2 uncomment the following line of code
-load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/reviewer_comments/tracking_frame_rate/folder_name_list_for_fig_S2/all_data/folders_list_all_data.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S2_dataset.mat')
 
 %%% to find the animals per frame and cumulative recording length for AML67 open loop uncomment the following line of code
-% load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/reviewer_comments/tracking_frame_rate/folder_name_list_for_fig_S2/AML67_open_loop/folder_list_AML67_open_loop.mat')
+% load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\supplementary_table_S1_dataset\dataset_turning_vs_forward_AML67_open_loop.mat')
 
 %%% to find the animals per frame and cumulative recording length for AML67 closed-loop uncomment the following line of code
-% load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/reviewer_comments/tracking_frame_rate/folder_name_list_for_fig_S2/AML67_closed_loop/folder_list_AML67_closed_loop.mat')
+% load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\supplementary_table_S1_dataset\dataset_turning_vs_forward_AML67_closed_loop.mat')
 
 %%% to find the animals per frame and cumulative recording length for AML470 open loop uncomment the following line of code
-% load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/reviewer_comments/tracking_frame_rate/folder_name_list_for_fig_S2/AML470_open_loop/folder_list_AML470_open_loop.mat')
+% load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\supplementary_table_S1_dataset\dataset_turning_vs_forward_AML470_open_loop.mat')
 
 %%% to find the animals per frame and cumulative recording length for AML470 closed-loop uncomment the following line of code
-% load('/projects/LEIFER/Sandeep/Publications/Liu_etal_2021/reviewer_comments/tracking_frame_rate/folder_name_list_for_fig_S2/AML470_closed_loop/folder_list_AML470_closed_loop.mat')
+% load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\supplementary_table_S1_dataset\dataset_turning_vs_forward_AML470_closed_loop.mat')
 
 %%% loading parameters
 parameters = load_parameters(folders{1}); 
