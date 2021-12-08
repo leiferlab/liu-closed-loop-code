@@ -63,13 +63,13 @@ for folder_index = 1:length(folders)
     experiment_drifts = [experiment_drifts, loaded_variable.experimentmaxdrift];
 end
 bin_edges = 0:10;
-lag_prob = histcounts(lags,bin_edges) / numel(lags);
+latency = histcounts(lags,bin_edges) / numel(lags);
 
 %% plot figure S2a
 ax1=figure('Renderer', 'painters', 'Position', [440 290 694 520]);
-plot(bin_edges(1:end-1), lag_prob , '-o','LineWidth',4,'MarkerFaceColor',[0 0.45,0.74],'MarkerSize',15)
+plot(bin_edges(1:end-1), latency , '-o','LineWidth',4,'MarkerFaceColor',[0 0.45,0.74],'MarkerSize',15)
 for label_index = 1:numel(bin_edges)-2
-    text(bin_edges(1+label_index),lag_prob(1+label_index), [num2str(round(lag_prob(1+label_index)*100,3)), '%'],'VerticalAlignment','bottom','HorizontalAlignment','left')
+    text(bin_edges(1+label_index),latency(1+label_index), [num2str(round(latency(1+label_index)*100,3)), '%'],'VerticalAlignment','bottom','HorizontalAlignment','left')
 end
 % set(gca,'YScale','log')
 xlabel('Round-trip Latency (frames)')
