@@ -10,26 +10,19 @@ clc
 close all
 
 %% ask user which figure to generate. Select the corresponding figure code to generate figure of interest
-%%% For e.g. to generate figure 2, use the figure code 2.
-%%% Figure number and corresponding figure code
-%%% Figure 2=2;
-%%% Figure 3=3; 
-%%% supplementary fig. S1=11;
-%%% supplementary fig. S3=13;
-%%% supplementary fig. S4=14; 
-%%% supplementary fig. S6=16; 
+list = {'Figure 2','Figure 3','supplementary fig. S1',...                   
+'supplementary fig. S3','supplementary fig. S4','supplementary fig. S6'};
+[indx,~] = listdlg('PromptString',{'Please choose the figure from the paper to plot.',''},'ListString',list,'SelectionMode','single');
 
-plot_figure=[2 3];
+plot_figure=[indx];
 
 %% ask for folders and initialize
-%%% addpath(genpath(pwd))
+addpath(genpath(pwd))
 load('reference_embedding.mat')
 relevant_track_fields = {'Centerlines','Path','Frames','AlignedStimulus', 'Velocity','Length','VelocityBehavior'};
 
 %%%select folders
-% % folders = getfoldersGUI(); %% manually select folders using experimental tags
-folders=load('D:/Github_repos/liu-closed-loop-code/datasets_used_in_paper/figure_2_dataset.mat'); %%% enter the path to the dataset folder
-folders=folders.folders;
+folders = getfoldersGUI(); %% manually select folders using experimental tags
 
 parameters = load_parameters(folders{1}); % load parameters for the first folder
 
@@ -118,7 +111,7 @@ video_duration = total_window_frames; % total duration in seconds
 if plot_video
     pathname = uigetdir('', 'Select Video Output Folder')
     if isequal(pathname,0)
-        %cancel
+        %%cancel
        return
     end
 end
@@ -248,69 +241,71 @@ n_tracks=zeros(1,n_sti); %number of tracks in each stim intensities
 my_colors = velocity_based_behavior_colors;
 my_behavior_names = velocity_based_behavior_names;
 for stimulus_index = 1:n_sti
-    n_tracks(stimulus_index) = round(mean(arrayfun(@(x) size(x{1},2), [all_behavior_transitions_for_frame{1,stimulus_index}])));
+
+    n_tracks(stimulus_index) = numel(video_possible_frames{stimulus_index});
+    
     if n_tracks <= 5
        continue 
     end
 
-    figure
-    hold on;grid on
-    head_stim_y_location = 1.1;
-    tail_stim_y_location = 1.0;
-    %%%head stimulus color
-    if saved_head_stimulus_intensities(stimulus_index) < 0
-        %%%blue
-        head_stimulus_color = 1 - (abs(saved_head_stimulus_intensities(stimulus_index)) / parameters.avgPowerBlue);
-        head_stimulus_color = [head_stimulus_color head_stimulus_color 1];
-    else
-        %%%red
-        head_stimulus_color = 1 - (saved_head_stimulus_intensities(stimulus_index) / parameters.avgPowerRed);
-        head_stimulus_color = [1 head_stimulus_color head_stimulus_color];
-    end
-    %%%tail stimulus color
-    if saved_tail_stimulus_intensities(stimulus_index) < 0
-        %%%blue
-        tail_stimulus_color = 1 - (abs(saved_tail_stimulus_intensities(stimulus_index)) / parameters.avgPowerBlue);
-        tail_stimulus_color = [tail_stimulus_color tail_stimulus_color 1];
-    else
-        %%%red
-        tail_stimulus_color = 1 - (saved_tail_stimulus_intensities(stimulus_index) / parameters.avgPowerRed);
-        tail_stimulus_color = [1 tail_stimulus_color tail_stimulus_color];
-    end
-    text(0, head_stim_y_location, 'Head ', 'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom');
-    text(0, tail_stim_y_location, 'Tail ', 'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom');
-    if saved_head_or_tail_first(stimulus_index)
-        %%%head is first
-        rectangle('Position',[0 head_stim_y_location saved_head_stimulus_durations(stimulus_index)/parameters.SampleRate abs(head_stim_y_location-tail_stim_y_location)],'FaceColor',head_stimulus_color)
-        rectangle('Position',[saved_stimulus_delays(stimulus_index)/parameters.SampleRate tail_stim_y_location saved_tail_stimulus_durations(stimulus_index)/parameters.SampleRate abs(head_stim_y_location-tail_stim_y_location)],'FaceColor',tail_stimulus_color)
-        head_or_tail_string = 'Head Stimulus First';
-    else
-        %%%tail is first
-        rectangle('Position',[0 tail_stim_y_location saved_tail_stimulus_durations(stimulus_index)/parameters.SampleRate abs(head_stim_y_location-tail_stim_y_location)],'FaceColor',tail_stimulus_color)
-        rectangle('Position',[saved_stimulus_delays(stimulus_index)/parameters.SampleRate head_stim_y_location saved_head_stimulus_durations(stimulus_index)/parameters.SampleRate abs(head_stim_y_location-tail_stim_y_location)],'FaceColor',head_stimulus_color)
-        head_or_tail_string = 'Tail Stimulus First';
-    end
-    
-    for behavior_index = 1:number_of_behaviors
-        plot(-time_window_before/fps:1/fps:time_window_after/fps, squeeze(behavior_ratios_for_frame(behavior_index,stimulus_index,:)), '-', 'color', my_colors(behavior_index,:),'Linewidth', 3,'DisplayName',my_behavior_names{behavior_index});
-    end
-    hold off
-    xlabel('Time (s)') % x-axis label
-    ylabel('Behavioral Ratio') % y-axis label
-% % %     title({head_or_tail_string, ...
-% % %          ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-% % %          ['Head Stimulus Duration = ', num2str(saved_head_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
-% % %          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-% % %          [' Tail Stimulus Duration = ', num2str(saved_tail_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
-% % %          ['Delay Duration = ', num2str(saved_stimulus_delays(stimulus_index)/parameters.SampleRate), 's'] ...
-% % %          ['(n = ', num2str(n_tracks(stimulus_index)), ' events)']});
-
-    title({head_or_tail_string, ...
-         ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-         ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2']});
-    ax = gca;
-    ax.FontSize = 10;
-    axis([-time_window_before/fps time_window_after/fps 0  head_stim_y_location*2-tail_stim_y_location])
+% % % %     figure
+% % % %     hold on;grid on
+% % % %     head_stim_y_location = 1.1;
+% % % %     tail_stim_y_location = 1.0;
+% % % %     %%%head stimulus color
+% % % %     if saved_head_stimulus_intensities(stimulus_index) < 0
+% % % %         %%%blue
+% % % %         head_stimulus_color = 1 - (abs(saved_head_stimulus_intensities(stimulus_index)) / parameters.avgPowerBlue);
+% % % %         head_stimulus_color = [head_stimulus_color head_stimulus_color 1];
+% % % %     else
+% % % %         %%%red
+% % % %         head_stimulus_color = 1 - (saved_head_stimulus_intensities(stimulus_index) / parameters.avgPowerRed);
+% % % %         head_stimulus_color = [1 head_stimulus_color head_stimulus_color];
+% % % %     end
+% % % %     %%%tail stimulus color
+% % % %     if saved_tail_stimulus_intensities(stimulus_index) < 0
+% % % %         %%%blue
+% % % %         tail_stimulus_color = 1 - (abs(saved_tail_stimulus_intensities(stimulus_index)) / parameters.avgPowerBlue);
+% % % %         tail_stimulus_color = [tail_stimulus_color tail_stimulus_color 1];
+% % % %     else
+% % % %         %%%red
+% % % %         tail_stimulus_color = 1 - (saved_tail_stimulus_intensities(stimulus_index) / parameters.avgPowerRed);
+% % % %         tail_stimulus_color = [1 tail_stimulus_color tail_stimulus_color];
+% % % %     end
+% % % %     text(0, head_stim_y_location, 'Head ', 'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom');
+% % % %     text(0, tail_stim_y_location, 'Tail ', 'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom');
+% % % %     if saved_head_or_tail_first(stimulus_index)
+% % % %         %%%head is first
+% % % %         rectangle('Position',[0 head_stim_y_location saved_head_stimulus_durations(stimulus_index)/parameters.SampleRate abs(head_stim_y_location-tail_stim_y_location)],'FaceColor',head_stimulus_color)
+% % % %         rectangle('Position',[saved_stimulus_delays(stimulus_index)/parameters.SampleRate tail_stim_y_location saved_tail_stimulus_durations(stimulus_index)/parameters.SampleRate abs(head_stim_y_location-tail_stim_y_location)],'FaceColor',tail_stimulus_color)
+% % % %         head_or_tail_string = 'Head Stimulus First';
+% % % %     else
+% % % %         %%%tail is first
+% % % %         rectangle('Position',[0 tail_stim_y_location saved_tail_stimulus_durations(stimulus_index)/parameters.SampleRate abs(head_stim_y_location-tail_stim_y_location)],'FaceColor',tail_stimulus_color)
+% % % %         rectangle('Position',[saved_stimulus_delays(stimulus_index)/parameters.SampleRate head_stim_y_location saved_head_stimulus_durations(stimulus_index)/parameters.SampleRate abs(head_stim_y_location-tail_stim_y_location)],'FaceColor',head_stimulus_color)
+% % % %         head_or_tail_string = 'Tail Stimulus First';
+% % % %     end
+% % % %     
+% % % %     for behavior_index = 1:number_of_behaviors
+% % % %         plot(-time_window_before/fps:1/fps:time_window_after/fps, squeeze(behavior_ratios_for_frame(behavior_index,stimulus_index,:)), '-', 'color', my_colors(behavior_index,:),'Linewidth', 3,'DisplayName',my_behavior_names{behavior_index});
+% % % %     end
+% % % %     hold off
+% % % %     xlabel('Time (s)') % x-axis label
+% % % %     ylabel('Behavioral Ratio') % y-axis label
+% % % % % % %     title({head_or_tail_string, ...
+% % % % % % %          ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
+% % % % % % %          ['Head Stimulus Duration = ', num2str(saved_head_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
+% % % % % % %          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
+% % % % % % %          [' Tail Stimulus Duration = ', num2str(saved_tail_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
+% % % % % % %          ['Delay Duration = ', num2str(saved_stimulus_delays(stimulus_index)/parameters.SampleRate), 's'] ...
+% % % % % % %          ['(n = ', num2str(n_tracks(stimulus_index)), ' events)']});
+% % % % 
+% % % %     title({head_or_tail_string, ...
+% % % %          ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
+% % % %          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2']});
+% % % %     ax = gca;
+% % % %     ax.FontSize = 10;
+% % % %     axis([-time_window_before/fps time_window_after/fps 0  head_stim_y_location*2-tail_stim_y_location])
 
 end
 
@@ -318,7 +313,7 @@ end
 my_colors = velocity_based_behavior_colors;
 my_behavior_names = velocity_based_behavior_names;
 
-if any(ismember(plot_figure,[2,14,16]))
+if any(ismember(plot_figure,[1,5,6]))
 for stimulus_index = 1:n_sti
     %%% plot the change in fraction of animals before or after the stimulus
     if saved_head_or_tail_first(stimulus_index)
@@ -342,7 +337,7 @@ for stimulus_index = 1:n_sti
     ax = gca;
     ax.FontSize = 10;
     
-    %%%vkeep track of the bars
+    %%%keep track of the bars
     p = zeros(1, number_of_behaviors); % the p-values
     bar_vals = zeros(number_of_behaviors,2);
     error_vals = zeros(number_of_behaviors*2,2);
@@ -355,10 +350,10 @@ for stimulus_index = 1:n_sti
         %%%construct 95% confidence interval for the before and after from
         %%%bootstrapped values
         error_vals_index = (behavior_index-1)*2+1;
-        error_vals(error_vals_index,1) = abs(bar_vals(behavior_index,1) - prctile(squeeze(bootstrapped_behavioral_ratios_for_frame(behavior_index,stimulus_index,velocity_time_window_before-(2*parameters.SampleRate),:)),0.025));
-        error_vals(error_vals_index,2) = abs(bar_vals(behavior_index,2) - prctile(squeeze(bootstrapped_behavioral_ratios_for_frame(behavior_index,stimulus_index,velocity_time_window_before+total_stim_duration,:)),0.025));
-        error_vals(error_vals_index+1,1) = abs(prctile(squeeze(bootstrapped_behavioral_ratios_for_frame(behavior_index,stimulus_index,velocity_time_window_before-(2*parameters.SampleRate),:)), 0.975) - bar_vals(behavior_index,1));
-        error_vals(error_vals_index+1,2) = abs(prctile(squeeze(bootstrapped_behavioral_ratios_for_frame(behavior_index,stimulus_index,velocity_time_window_before+total_stim_duration,:)), 0.975) - bar_vals(behavior_index,2));
+        error_vals(error_vals_index,1) = abs(bar_vals(behavior_index,1) - prctile(squeeze(bootstrapped_behavioral_ratios_for_frame(behavior_index,stimulus_index,velocity_time_window_before-(2*parameters.SampleRate),:)),0.025)); %%% error low
+        error_vals(error_vals_index,2) = abs(prctile(squeeze(bootstrapped_behavioral_ratios_for_frame(behavior_index,stimulus_index,velocity_time_window_before-(2*parameters.SampleRate),:)), 0.975) - bar_vals(behavior_index,1)); %%% error high
+        error_vals(error_vals_index+1,1) = abs(bar_vals(behavior_index,2) - prctile(squeeze(bootstrapped_behavioral_ratios_for_frame(behavior_index,stimulus_index,velocity_time_window_before+total_stim_duration,:)),0.025)); %%% error low
+        error_vals(error_vals_index+1,2) = abs(prctile(squeeze(bootstrapped_behavioral_ratios_for_frame(behavior_index,stimulus_index,velocity_time_window_before+total_stim_duration,:)), 0.975) - bar_vals(behavior_index,2)); %%% error high
         
         %%%determine if the difference is significant using wilcoxon ranksum
         binary_observations_for_behavior_before = double(all_behavior_annotations_for_frame{stimulus_index}{velocity_time_window_before-(2*parameters.SampleRate)}==behavior_index);
@@ -390,18 +385,6 @@ for stimulus_index = 1:n_sti
         for behavior_index = 1:number_of_behaviors
             hErr = errorbar(x(behavior_index), bar_vals(behavior_index,bar_i), error_vals((bar_i-1)*2+behavior_index,1), error_vals((bar_i-1)*2+behavior_index,2),...
             'color',my_colors(behavior_index,:), 'Linewidth', 2);
-            
-            %%%resize the error bars
-            myerrorbar = hErr.Bar;                           % hidden property/handle
-            drawnow                                 % populate b's properties
-            vd = myerrorbar.VertexData;
-            N = 1;                           % number of error bars
-            newLength = 0.05;
-            leftInds = N*2+1:2:N*6;
-            rightInds = N*2+2:2:N*6;
-            vd(1,leftInds,1) = [x(behavior_index)-newLength, x(behavior_index)-newLength];
-            vd(1,rightInds,1) = [x(behavior_index)+newLength, x(behavior_index)+newLength];
-            myerrorbar.VertexData = vd;
         end
     end
     
@@ -417,16 +400,9 @@ for stimulus_index = 1:n_sti
     set(gca, 'XTick', 1:number_of_behaviors)
     set(gca, 'XTickLabel', my_behavior_names);
     ylabel('Fraction of Animals') % y-axis label
-% % %     title({head_or_tail_string, ...
-% % %          ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-% % %          ['Head Stimulus Duration = ', num2str(saved_head_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
-% % %          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-% % %          [' Tail Stimulus Duration = ', num2str(saved_tail_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
-% % %          ['Delay Duration = ', num2str(saved_stimulus_delays(stimulus_index)/parameters.SampleRate), 's'] ...
-% % %          ['(n = ', num2str(n_tracks(stimulus_index)), ' events)']});
-
     title({['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-         ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2']});
+         ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
+         ['(n = ', num2str(n_tracks(stimulus_index)), ' events)']});
     hold off 
 end
 
@@ -492,16 +468,7 @@ for stimulus_index = 1:n_sti
     axis([-time_window_before/fps time_window_after/fps edges(1) head_stim_y_location*2-tail_stim_y_location])
     xlabel('Time (s)')
     ylabel('Velocity (mm/s)')
-% % %     title({head_or_tail_string, ...
-% % %          ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-% % %          ['Head Stimulus Duration = ', num2str(saved_head_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
-% % %          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-% % %          [' Tail Stimulus Duration = ', num2str(saved_tail_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
-% % %          ['Delay Duration = ', num2str(saved_stimulus_delays(stimulus_index)/parameters.SampleRate), 's'] ...
-% % %          ['(n = ', num2str(n_tracks(stimulus_index)), ' events)']});
-
-    title({head_or_tail_string, ...
-         ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
+    title({['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2']});
 end
 
@@ -606,16 +573,7 @@ for stimulus_index = 1:n_sti
 
     xlabel('Time (s)')
     ylabel('Velocity Traces (mm/s)')
-% % %     title({head_or_tail_string, ...
-% % %          ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-% % %          ['Head Stimulus Duration = ', num2str(saved_head_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
-% % %          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-% % %          [' Tail Stimulus Duration = ', num2str(saved_tail_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
-% % %          ['Delay Duration = ', num2str(saved_stimulus_delays(stimulus_index)/parameters.SampleRate), 's'] ...
-% % %          ['(n = ', num2str(n_tracks(stimulus_index)), ' events)']});    
-
-    title({head_or_tail_string, ...
-         ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
+    title({['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2']});  
 
      if plot_video
@@ -666,7 +624,7 @@ for stimulus_index = 1:n_sti
         %%%blue
         tail_stimulus_color = 1 - (abs(saved_tail_stimulus_intensities(stimulus_index)) / parameters.avgPowerBlue);
         tail_stimulus_color = [tail_stimulus_color tail_stimulus_color 1];
-%         tail_stimulus_color = [1 1 1];
+%%%         tail_stimulus_color = [1 1 1];
     else
         %%%red
         tail_stimulus_color = 1 - (saved_tail_stimulus_intensities(stimulus_index) / parameters.avgPowerRed);
@@ -688,16 +646,7 @@ for stimulus_index = 1:n_sti
     axis([-time_window_before/fps time_window_after/fps edges(1)-0.1 head_stim_y_location*2-tail_stim_y_location])
     xlabel('Time (s)')
     ylabel('Velocity (mm/s)')
-% % %     set(gca, 'XTick', -time_window_before/fps:5:time_window_after/fps)
-% % %     title({head_or_tail_string, ...
-% % %          ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-% % %          ['Head Stimulus Duration = ', num2str(saved_head_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
-% % %          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
-% % %          [' Tail Stimulus Duration = ', num2str(saved_tail_stimulus_durations(stimulus_index)/parameters.SampleRate), 's'], ...
-% % %          ['Delay Duration = ', num2str(saved_stimulus_delays(stimulus_index)/parameters.SampleRate), 's'] ...
-% % %          ['Selected Index = ', num2str(selected_index)]});
-    title({head_or_tail_string, ...
-         ['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
+    title({['Head Stimulus Intensity = ', num2str(round(saved_head_stimulus_intensities(stimulus_index))), 'uW/mm2'], ...
          ['Tail Stimulus Intensity = ', num2str(round(saved_tail_stimulus_intensities(stimulus_index))), 'uW/mm2']});
      set(gca, 'color', [0.5 0.5 0.5])
      hold off;
@@ -705,7 +654,6 @@ end
 end
 %% use behavioral annotations to determine decision making +
 % % % plot response probability heatmap given head and tail intensities 
-% % % (this is only compatible without delayed stimulus)
 
 n_tracks = zeros(1,n_sti); %number of tracks in each sti intensities
 transition_count = 0;
@@ -770,7 +718,7 @@ end
 %%%response with respect to each stimulus intensity, i.e. heatmap (figure 3a-d)
 behavioral_response_for_all_stimuli = sum(behavioral_transition_matrix_for_all_stimuli,1); %display only the result probability
 
-if any(ismember(plot_figure,3))
+if any(ismember(plot_figure,2))
 ax31=figure('Renderer', 'painters', 'Position', [440 290 798 600]);
 for behavioral_index = 1:numel(my_behavior_names)
     response_heatmap_for_behavior = zeros(numel(parameters.RailsIntensities),numel(parameters.RailsIntensities));
@@ -800,11 +748,9 @@ for behavioral_index = 1:numel(my_behavior_names)
     set(gca, 'YTickLabel', abs(round(parameters.RailsIntensities)))
     axis tight
     caxis([0 max(response_heatmap_for_behavior(:))])
-%         caxis([0 0.8])
     colorbar
     colormap(othercolor('OrRd9'))
 % %     caxis([0 0.9])
-% %     chart_title = ['Probability of ', my_behavior_names{behavioral_index}, ' response'];
     chart_title = [my_behavior_names{behavioral_index}];
     title(chart_title)
     hold off;
@@ -820,12 +766,6 @@ for behavioral_index = 1:numel(my_behavior_names)
     xcoeff(behavioral_index) = sf.p10;
     ycoeff(behavioral_index) = sf.p01;
     ci(:,:,behavioral_index) = confint(sf); % three columns: for z_intercept, xcoeff, ycoeff
-    
-% %     figure
-% %     plot(sf)
-% %     hold on;
-% %     surf(x,y,z)
-% %     title(chart_title)
 end
 
 %%% Plot plane fit coefficients (figure 3f)
@@ -896,7 +836,7 @@ end
 %%%%% This portion of the code is used to generate figure S1.
 %%%%% For this portion of the code use the complete dataset (select "All tags" at the very first step)
 
-if any(ismember(plot_figure,11))
+if any(ismember(plot_figure,3))
 %% get closed loop lags
 lags = [];
 experiment_drifts = [];
@@ -918,7 +858,7 @@ for label_index = 1:numel(bin_edges)-2
     text(bin_edges(1+label_index),latency(1+label_index), [num2str(round(latency(1+label_index)*100,3)), '%'],'VerticalAlignment','bottom','HorizontalAlignment','left')
 end
 % % % set(gca,'YScale','log')
-xlabel('Round-trip Latency (frames)')
+xlabel('Acquire-Draw-Project Latency (frames)')
 ylabel('Probability')
 
 ax1=gca;
@@ -933,9 +873,6 @@ XOppTickLabels = round(bin_edges(1:end-1) * (1000/parameters.SampleRate));
 % % % Set the x-tick and y-tick  labels for the second axes
 set(ax2, 'XTickLabel', XOppTickLabels);
 set(ax2, 'YTickLabel', []);
-% % % ax2.FontSize = 14;
-% % % ax1.FontSize=14;
-% % % 
 % % % xlim([0 9])
 xlabel(ax2,'Round-trip Latency (ms)')
 %%
@@ -1011,7 +948,7 @@ bin_edges = 0:MAX_LAG;
 lag_counts = sum(track_count_vs_tracking_lag,1);
 lag_prob = lag_counts / sum(lag_counts);
 
-%% PLot tracking frame rate (Figure S1b)
+%% Plot tracking frame rate (Figure S1b)
 figure('Renderer', 'painters', 'Position', [440 290 694 520])
 plot(bin_edges(2:end), lag_prob , '-o','MarkerFaceColor',[0 0.45,0.74],'MarkerSize',10,'LineWidth',2)
 % % % label the first label_n datapoints
@@ -1129,7 +1066,7 @@ sprintf(['total stim events on valid worms= ', num2str(numel(behavioral_transiti
 end
 
 %% To plot histogram of velocity distribution (Figure S3)
-if any(ismember(plot_figure,13))
+if any(ismember(plot_figure,4))
 figure;
 histogram(vertcat(allTracks.Velocity),7000)
 xlim([-0.4 0.4])

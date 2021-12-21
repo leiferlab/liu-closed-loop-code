@@ -7,12 +7,6 @@ clear
 clc
 close all
 
-%%% users can manually select folders or choose specific folders from below
-
-%%% manual selection of folders
-% % select folders 
-% % folders = getfoldersGUI();
-
 %%% to plot supplementary figure S2 uncomment the following line of code
 load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S2_dataset.mat')
 
@@ -72,7 +66,7 @@ for label_index = 1:numel(bin_edges)-2
     text(bin_edges(1+label_index),latency(1+label_index), [num2str(round(latency(1+label_index)*100,3)), '%'],'VerticalAlignment','bottom','HorizontalAlignment','left')
 end
 % set(gca,'YScale','log')
-xlabel('Round-trip Latency (frames)')
+xlabel('Acquire-Draw-Project Latency (frames)')
 ylabel('Probability')
 
 ax1=gca;

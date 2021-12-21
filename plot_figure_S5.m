@@ -3,20 +3,20 @@ clear
 clc
 close all
 
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML67_open_loop\habituation_num_reversal_rails_AML67_20210624_3.mat')
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML67_open_loop\habituation_num_reversal_rails_AML67_20210614_3.mat')
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML67_open_loop\habituation_num_reversal_rails_AML67_20200902_3.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\S5_Data\AML67_open_loop\habituation_num_reversal_rails_AML67_20210624.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\S5_Data\AML67_open_loop\habituation_num_reversal_rails_AML67_20210614.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\S5_Data\AML67_open_loop\habituation_num_reversal_rails_AML67_20200902.mat')
 
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML470_open_loop\habituation_num_reversal_rails_AML470_20210723_3.mat')
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML470_open_loop\habituation_num_reversal_rails_AML470_20210721_3.mat')
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_S5_dataset\AML470_open_loop\habituation_num_reversal_rails_AML470_20210720_3.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\S5_Data\AML470_open_loop\habituation_num_reversal_rails_AML470_20210723.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\S5_Data\AML470_open_loop\habituation_num_reversal_rails_AML470_20210721.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\S5_Data\AML470_open_loop\habituation_num_reversal_rails_AML470_20210720.mat')
 
 bins_of_interest=[0:3600:54000];
 
-[mean_AML67,errhigh_AML67,errlow_AML67]=habituation_plot([habituation_num_reversal_rails_AML67_20200902_3(:,4:5);habituation_num_reversal_rails_AML67_20210614_3(:,4:5);habituation_num_reversal_rails_AML67_20210624_3(:,4:5)]...
+[mean_AML67,errhigh_AML67,errlow_AML67]=habituation_plot([habituation_num_reversal_rails_AML67_20200902(:,4:5);habituation_num_reversal_rails_AML67_20210614(:,4:5);habituation_num_reversal_rails_AML67_20210624(:,4:5)]...
     ,bins_of_interest);
 
-[mean_AML470,errhigh_AML470,errlow_AML470]=habituation_plot([habituation_num_reversal_rails_AML470_20210720_3(:,4:5);habituation_num_reversal_rails_AML470_20210721_3(:,4:5);habituation_num_reversal_rails_AML470_20210723_3(:,4:5)]...
+[mean_AML470,errhigh_AML470,errlow_AML470]=habituation_plot([habituation_num_reversal_rails_AML470_20210720(:,4:5);habituation_num_reversal_rails_AML470_20210721(:,4:5);habituation_num_reversal_rails_AML470_20210723(:,4:5)]...
     ,bins_of_interest);
 %%
 x_data = [2:2:30];

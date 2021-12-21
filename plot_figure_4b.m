@@ -5,51 +5,51 @@ clc
 close all
 
 %%%%%% loading closed loop data from 20210723
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210723_turns_0uW_3s_new4.mat')
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210723_turns_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\closed_loop\AML470_20210723_turns_0uW_3s.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\closed_loop\AML470_20210723_turns_80uW_3s.mat')
 
 %%%%%% loading closed loop data from 20210721
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210721_turns_0uW_3s_new4.mat')
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210721_turns_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\closed_loop\AML470_20210721_turns_0uW_3s.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\closed_loop\AML470_20210721_turns_80uW_3s.mat')
 
 %%%%%% loading closed loop data from 20210720
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210720_turns_0uW_3s_new4.mat')
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\closed_loop\AML470_20210720_turns_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\closed_loop\AML470_20210720_turns_0uW_3s.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\closed_loop\AML470_20210720_turns_80uW_3s.mat')
 
 %%%%%% loading open loop data from 20210723
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210723_rails_0uW_3s_new4.mat')
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210723_rails_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\open_loop\AML470_20210723_rails_0uW_3s.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\open_loop\AML470_20210723_rails_80uW_3s.mat')
 
 %%%%%% loading open loop data from 20210721
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210721_rails_0uW_3s_new4.mat')
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210721_rails_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\open_loop\AML470_20210721_rails_0uW_3s.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\open_loop\AML470_20210721_rails_80uW_3s.mat')
 
 %%%%%% loading open loop data from 20210720
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210720_rails_0uW_3s_new4.mat')
-load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\figure_4b_dataset\AML470\open_loop\AML470_20210720_rails_80uW_3s_new4.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\open_loop\AML470_20210720_rails_0uW_3s.mat')
+load('D:\Github_repos\liu-closed-loop-code\datasets_used_in_paper\F4b_Data\AML470\open_loop\AML470_20210720_rails_80uW_3s.mat')
 
 %% combining data from all the three days
 %%%% 80 uW closed loop data
-turning_data_80uW=[AML470_20210723_turns_80uW_3s_new4
-    AML470_20210721_turns_80uW_3s_new4
-    AML470_20210720_turns_80uW_3s_new4];
+turning_data_80uW=[AML470_20210723_turns_80uW_3s
+    AML470_20210721_turns_80uW_3s
+    AML470_20210720_turns_80uW_3s];
 
 %%%% 0.5 uW closed data
-turning_data_0uW=[AML470_20210723_turns_0uW_3s_new4
-    AML470_20210721_turns_0uW_3s_new4
-    AML470_20210720_turns_0uW_3s_new4];
+turning_data_0uW=[AML470_20210723_turns_0uW_3s
+    AML470_20210721_turns_0uW_3s
+    AML470_20210720_turns_0uW_3s];
 
 %%%%%%%%%
 
 %%%% 80 uW open loop data
-rails_data_80uW=[AML470_20210723_rails_80uW_3s_new4
-    AML470_20210721_rails_80uW_3s_new4
-    AML470_20210720_rails_80uW_3s_new4];
+rails_data_80uW=[AML470_20210723_rails_80uW_3s
+    AML470_20210721_rails_80uW_3s
+    AML470_20210720_rails_80uW_3s];
 
 %%%% 0.5 uW open loop data
-rails_data_0uW=[AML470_20210723_rails_0uW_3s_new4
-    AML470_20210721_rails_0uW_3s_new4
-    AML470_20210720_rails_0uW_3s_new4];
+rails_data_0uW=[AML470_20210723_rails_0uW_3s
+    AML470_20210721_rails_0uW_3s
+    AML470_20210720_rails_0uW_3s];
 
 %% finding the mean and 95% ci using bootstrap function (bootstrap_mean_and_ci.m)
 
