@@ -1,13 +1,13 @@
 ﻿Figure number,Matlab script,Tags to select,Notes
 Figure 2,plot_Figures_2_3_S1_S3_S4_S6.m,"""Mochi"", ""AKS483.7.e"", ""ret""",
 Figure 3,plot_Figures_2_3_S1_S3_S4_S6.m,"""Mochi"", ""AKS483.7.e"", ""ret""",
-Figure 4a,plot_figure_4a.m,"""Sandeep"", ""AML67_10ulRet_red""",
-Figure 4b,plot_figure_4b.m,"""Sandeep"", ""AKS_483.7.e_mec4_Chrimson_10ulRet_red""",
+Figure 4a,plot_figures_4_S5.m,"""Sandeep"", ""AML67_10ulRet_red""",
+Figure 4b,plot_figures_4_S5.m,"""Sandeep"", ""AKS_483.7.e_mec4_Chrimson_10ulRet_red""",
 Figure S1,plot_Figures_2_3_S1_S3_S4_S6.m,"""Mochi""",
 Figure S2,plot_figure_S2.m,"""Sandeep""",
 Figure S3,plot_Figures_2_3_S1_S3_S4_S6.m,"""Mochi"", ""AKS483.7.e""",
 Figure S4,plot_Figures_2_3_S1_S3_S4_S6.m,"""Mochi"", ""AKS483.7.e"", ""noret""",
-Figure S5,plot_figure_S5.m,"""Sandeep"", ""AKS_483.7.e_mec4_Chrimson_10ulRet_red"" and ""Sandeep"", ""AML67_10ulRet_red"" ","User needs to run the code twice. Run for the first set of tags to get the habituation data for AML470. In the next iteration, use the second set of tags to get the habituation data for AML67."
+Figure S5,plot_figures_4_S5.m,"""Sandeep"", ""AKS_483.7.e_mec4_Chrimson_10ulRet_red"" and ""Sandeep"", ""AML67_10ulRet_red"" ","User needs to run the code twice. Run for the first set of tags to get the habituation data for AML470. In the next iteration, use the second set of tags to get the habituation data for AML67."
 Figure S6,plot_Figures_2_3_S1_S3_S4_S6.m,"""Mochi"", ""AML67"", ""ret""",
 ,,,
 ,,,
@@ -21,4 +21,3 @@ Figure S6,plot_Figures_2_3_S1_S3_S4_S6.m,"""Mochi"", ""AML67"", ""ret""",
 ,,"2) The script 'plot_Figures_2_3_S1_S3_S4_S6.m' will ask the user for the figure panels to generate. The user can select 'Figure 2' to specify the plots shown in Figure 2. Note this doesn't specify which data is to be plotted, just which collection of plots to generate.",
 ,,"3) Next, select the datasets by selecting ""Tags"". The MATLAB script asks the user to select the Tags in the GUI.  Please refer above and select the correct set of tags to select the data included in the figure. This will make sure that the correct data folder are analyzed.",
 ,,"4) At the last step the user should select ""All Tags"" in the GUI for the script to start analyzing data. (despite the name, this just means it will analyze all of the *selected* tags)",
-,,"5) Please note that for figure 4a, 4b, and S5, we have already analyzed the data and arranged them in .mat and .xlsx file. To generate these figures, the user can simply run the corresponding MATLAB script.",

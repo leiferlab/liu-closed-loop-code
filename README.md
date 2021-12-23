@@ -32,14 +32,8 @@ a) Please read the `instruction_to_generate_figures.csv` to get detailed explana
 
 b) After all the dataset that has gone through post-processing, run `plot_figures_2_3_S1_S3_S4_S6.m` to generate figures 2, 3, S1, S3, S4, and S6 as shown in the publication by providing the corresponding input dataset folder using the "Tags".   
 
-c) `Liu_etal_closed_loop_and_open_loop_analysis_1.m` is the primary code which is used to generate the information presented in figure 4, table 1 (Closed-loop optogenetic row), and supplementary table S1. 
+c) `plot_figures_4_S5.m` is the primary code which is used to generate the information presented in figure 4, figure S5, table 1 (Closed-loop optogenetic row), and supplementary table S1. 
 
-d)`Liu_etal_counting_stim_on_turn_onset_in_open_loop_experiment_1.m` is the special case of the above code (`Liu_etal_closed_loop_and_open_loop_analysis_1.m`). It was used only to find the number of stim on turn onset events in open-loop assay for filling the information in table 1 (Open-loop optogenetic row for this work).
+d)`Liu_etal_counting_stim_on_turn_onset_in_open_loop_experiment_1.m` is the special case of the above code (`plot_figures_4_S5.m`). It was used only to find the number of stim on turn onset events in open-loop assay for filling the information in table 1 (Open-loop optogenetic row for this work).
 
-e) `plot_figure_4a.m` is the code to plot the bar plot for AML67 data i.e. figure 4a. It reads the .mat files for both open loop and closed loop datasets for AML67. 
-
-f) `plot_figure_4b.m` is the code to plot the bar plot for AML470 data i.e. figure 4b. It reads the .mat files for both open loop and closed loop datasets for AML470. 
-
-g) `plot_figure_S2.m` is the code to generate the supplementary figure S2 and the data corresponding to Stimulation during turning vs forward enteries in supplementary table S1 (columns cumulative recording length, animals per frame).
-
-h) `plot_figure_S5.m` is the code to plot the habituation curve for both AML67 and AML470 as shown in supplementary figure S5.
+e) `plot_figure_S2.m` is the code to generate the supplementary figure S2 and the data corresponding to Stimulation during turning vs forward enteries in supplementary table S1 (columns cumulative recording length, animals per frame).
